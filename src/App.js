@@ -26,7 +26,6 @@ function generate_results(input_data) {
                
   let byCustomer = {};
   let total_points_by_customer = {};
-  console.log('points_per_transactiond', points_per_transaction);
   points_per_transaction.forEach(points_per_transaction => {
     let {custid, name, month, points} = points_per_transaction;   
     if (!byCustomer[custid]) {
@@ -66,13 +65,27 @@ function generate_results(input_data) {
       points: total_points_by_customer[custKey]
     });    
   }
-  console.log('points_per_transaction', total_points_by_customer);
+  const finalCount = tot.reduce(function (total, obj) {
+    let key = obj['name'];
+    if (!total[key]) {
+        total[key] = 0
+    }
+    total[key] = total[key] + obj.points
+    return total;
+}, {});
+
+let arr = [];
+  for (custKey in finalCount) {    
+    arr.push({
+      name: custKey,
+      points: finalCount[custKey]
+    });    
+  }
   return {
     summary_by_customer: tot,
     points_per_transaction,
-    total_points_by_customer:totByCustomer
+    total_points_by_customer:arr
   };
-
 }
 
 function App() {
@@ -128,7 +141,7 @@ function App() {
   return transaction_data == null ?
     <div>Loading...</div> 
       :    
-    <div className="container-fluid">      
+    <div className="container">      
       
       <div className="row">
        <div className="col-6">
