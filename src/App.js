@@ -26,6 +26,7 @@ function generate_results(input_data) {
                
   let byCustomer = {};
   let total_points_by_customer = {};
+  console.log('points_per_transactiond', points_per_transaction);
   points_per_transaction.forEach(points_per_transaction => {
     let {custid, name, month, points} = points_per_transaction;   
     if (!byCustomer[custid]) {
@@ -65,11 +66,13 @@ function generate_results(input_data) {
       points: total_points_by_customer[custKey]
     });    
   }
+  console.log('points_per_transaction', total_points_by_customer);
   return {
     summary_by_customer: tot,
     points_per_transaction,
     total_points_by_customer:totByCustomer
   };
+
 }
 
 function App() {
@@ -125,16 +128,17 @@ function App() {
   return transaction_data == null ?
     <div>Loading...</div> 
       :    
-    <div>      
+    <div className="container-fluid">      
       
-      <div className="container">
-        <div className="row">
-          <div className="col-10">
+      <div className="row">
+       <div className="col-6">
+       <div className="row">
+          <div className="col-12">
             <h4>Points Rewards System Totals by Customer Months</h4>
           </div>
         </div>
         <div className="row">
-          <div className="col-8">
+          <div className="col-12">
             <ReactTable
               data={transaction_data.summary_by_customer}
               defaultPageSize={5}
@@ -159,24 +163,24 @@ function App() {
               />             
             </div>
           </div>
-        </div>
-        
-        <div className="container">    
+       </div>
+       <div className="col-6">    
           <div className="row">
-            <div className="col-10">
+            <div className="col-12">
               <h4>Points Rewards System Totals By Customer</h4>
             </div>
           </div>      
           <div className="row">
-            <div className="col-8">
+            <div className="col-12">
               <ReactTable
                 data={transaction_data.total_points_by_customer}
                 columns={totalsByColumns}
                 defaultPageSize={5}                
               />
             </div>
-          </div>
-        </div>      
+          </div>  
+       </div>
+        </div>       
     </div>
   ;
 }

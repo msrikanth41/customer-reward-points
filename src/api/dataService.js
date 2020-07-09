@@ -13,49 +13,49 @@ export default function() {
         {
           custid: 1,
           name: "Maya",
-          amt: 75,
+          amt: 120,
           transactionDt: "05-21-2019"
         },
         {
           custid: 1,
           name: "Maya",
-          amt: 94,
+          amt: 120,
           transactionDt: "05-21-2019"
         },
         {
           custid: 1,
           name: "Maya",
-          amt: 10,
+          amt: 120,
           transactionDt: "06-01-2019"
         },
         {
           custid: 1,
           name: "Maya",
-          amt: 75,
+          amt: 120,
           transactionDt: "06-21-2019"
         },
         {
           custid: 1,
           name: "Maya",
-          amt: 200,
+          amt: 120,
           transactionDt: "07-01-2019"
         },
         {
           custid: 1,
           name: "Maya",
-          amt: 1,
+          amt: 120,
           transactionDt: "07-04-2019"
         },
         {
           custid: 1,
           name: "Maya",
-          amt: 80,
+          amt: 120,
           transactionDt: "07-03-2019"
         },
         {
           custid: 1,
           name: "Maya",
-          amt: 224,
+          amt: 120,
           transactionDt: "07-21-2019"
         },
         {
