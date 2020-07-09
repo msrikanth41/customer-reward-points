@@ -4,11 +4,11 @@ import ReactTable from 'react-table';
 import "./App.css";
 import _ from 'lodash';
 
-function calculateResults(incomingData) {
-  // Calculate points per transaction
+function generate_results(input_data) {
 
+  // Calculate points per transaction
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const pointsPerTransaction = incomingData.map(transaction=> {
+  const points_per_transaction = input_data.map(transaction=> {
     let points = 0;
     let over100 = transaction.amt - 100;
     
@@ -25,16 +25,16 @@ function calculateResults(incomingData) {
   });
                
   let byCustomer = {};
-  let totalPointsByCustomer = {};
-  pointsPerTransaction.forEach(pointsPerTransaction => {
-    let {custid, name, month, points} = pointsPerTransaction;   
+  let total_points_by_customer = {};
+  points_per_transaction.forEach(points_per_transaction => {
+    let {custid, name, month, points} = points_per_transaction;   
     if (!byCustomer[custid]) {
       byCustomer[custid] = [];      
     }    
-    if (!totalPointsByCustomer[custid]) {
-      totalPointsByCustomer[name] = 0;
+    if (!total_points_by_customer[custid]) {
+      total_points_by_customer[name] = 0;
     }
-    totalPointsByCustomer[name] += points;
+    total_points_by_customer[name] += points;
     if (byCustomer[custid][month]) {
       byCustomer[custid][month].points += points;
       byCustomer[custid][month].monthNumber = month;
@@ -58,24 +58,22 @@ function calculateResults(incomingData) {
       tot.push(cRow);
     });    
   }
-  //console.log("byCustomer", byCustomer);
-  //console.log("tot", tot);
   let totByCustomer = [];
-  for (custKey in totalPointsByCustomer) {    
+  for (custKey in total_points_by_customer) {    
     totByCustomer.push({
       name: custKey,
-      points: totalPointsByCustomer[custKey]
+      points: total_points_by_customer[custKey]
     });    
   }
   return {
-    summaryByCustomer: tot,
-    pointsPerTransaction,
-    totalPointsByCustomer:totByCustomer
+    summary_by_customer: tot,
+    points_per_transaction,
+    total_points_by_customer:totByCustomer
   };
 }
 
 function App() {
-  const [transactionData, setTransactionData] = useState(null);
+  const [transaction_data, set_transformed_transactions] = useState(null);
   
   const columns = [
     {
@@ -101,13 +99,13 @@ function App() {
       accessor: 'name'      
     },    
     {
-      Header:'Points',
+      Header:'Totals Points',
       accessor: 'points'
     }
   ]
 
-  function getIndividualTransactions(row) {
-    let byCustMonth = _.filter(transactionData.pointsPerTransaction, (tRow)=>{    
+  function get_transactions(row) {
+    let byCustMonth = _.filter(transaction_data.points_per_transaction, (tRow)=>{    
       return row.original.custid === tRow.custid && row.original.monthNumber === tRow.month;
     });
     return byCustMonth;
@@ -115,16 +113,16 @@ function App() {
 
   useEffect(() => { 
     fetch().then((data)=> {             
-      const results = calculateResults(data);      
-      setTransactionData(results);
+      const results = generate_results(data);      
+      set_transformed_transactions(results);
     });
   },[]);
 
-  if (transactionData == null) {
+  if (transaction_data == null) {
     return <div>Loading...</div>;   
   }
 
-  return transactionData == null ?
+  return transaction_data == null ?
     <div>Loading...</div> 
       :    
     <div>      
@@ -132,21 +130,21 @@ function App() {
       <div className="container">
         <div className="row">
           <div className="col-10">
-            <h2>Points Rewards System Totals by Customer Months</h2>
+            <h4>Points Rewards System Totals by Customer Months</h4>
           </div>
         </div>
         <div className="row">
           <div className="col-8">
             <ReactTable
-              data={transactionData.summaryByCustomer}
+              data={transaction_data.summary_by_customer}
               defaultPageSize={5}
               columns={columns}
               SubComponent={row => {
                 return (
                   <div>
                     
-                      {getIndividualTransactions(row).map(tran=>{
-                        return <div className="container">
+                      {get_transactions(row).map((tran, key)=>{
+                        return <div key={"comtainer"+key} className="container">
                           <div className="row">
                             <div className="col-8">
                               <strong>Transaction Date:</strong> {tran.transactionDt} - <strong>$</strong>{tran.amt} - <strong>Points: </strong>{tran.points}
@@ -166,13 +164,13 @@ function App() {
         <div className="container">    
           <div className="row">
             <div className="col-10">
-              <h2>Points Rewards System Totals By Customer</h2>
+              <h4>Points Rewards System Totals By Customer</h4>
             </div>
           </div>      
           <div className="row">
             <div className="col-8">
               <ReactTable
-                data={transactionData.totalPointsByCustomer}
+                data={transaction_data.total_points_by_customer}
                 columns={totalsByColumns}
                 defaultPageSize={5}                
               />
